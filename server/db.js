@@ -1,9 +1,18 @@
 var Sequelize = require('sequelize');
+var DatabaseSettings = require('../settings.js');
 
 //connect to Heroku PostGres Database
 // var db = new Sequelize("postgres://xhzrrvvawqzqov:1c2ac54a72b223e5d603ce03d8195194ac39336f544c04b266758f083aea4a15@ec2-23-23-228-115.compute-1.amazonaws.com:5432/d5lfn726hf4pp6?ssl=true", {"dialect":"postgres", "ssl":true, "dialectOptions":{"ssl":{"require":true}}});
 
-var db = new Sequelize(process.env.DATABASE_URL || "postgres://qbfgjnmlebpuja:d1786dff84f79dc94fefc1179cc88921c9abe19e52fe1ccb862f47d076f80160@ec2-184-73-222-194.compute-1.amazonaws.com:5432/ddsuqnujjshp9n?ssl=true", {"dialect":"postgres", "ssl":true, "dialectOptions":{"ssl":{"require":true}}});
+var db = new Sequelize(process.env.DATABASE_URL || DatabaseSettings.DATABASE_URL, {
+  dialect: 'postgres',
+  ssl: true,
+  dialectOptions: {
+    ssl: {
+      require: true
+    }
+  }
+});
 
 var Project = db.define('Project', {
   id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
