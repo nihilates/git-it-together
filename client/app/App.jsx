@@ -21,18 +21,18 @@ export default class App extends React.Component {
     this.state = { projects: props.repod.getProjects(), currentProject: null, profile: props.auth.getProfile() }
 
     props.auth.on('profile_updated', (newProfile) => {
-      this.setState({profile: newProfile})
+      this.setState({profile: newProfile});
       props.repod.listUserProjects();
       //this.repod = new repoService();
-    })
+    });
     props.repod.on('list_updated', (items) => {
       this.setState({projects: items})//.bind(this)
       //this.addNewProject('assignment_jq_ee_sprint');
       //console.log('projects:', this.state.projects)
-    })
+    });
 
     props.auth.on('logged_out', (bye) => {
-      this.setState({profile: this.props.auth.getProfile()})
+      this.setState({profile: this.props.auth.getProfile()});
       //this.render();
     })
 
@@ -76,8 +76,8 @@ export default class App extends React.Component {
   }
 
   render() {
-    const { profile } = this.state
-    const { auth } = this.props
+    const { profile } = this.state;
+    const { auth } = this.props;
     //const requireAuth = (nextState, replace) => {
       if (!auth.loggedIn()) {
        //replace({ pathname: '/login' })

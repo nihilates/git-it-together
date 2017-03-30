@@ -15,14 +15,14 @@ export default class AuthService extends EventEmitter {
       }
     })
     // Add callback for lock `authenticated` event
-    this.lock.on('authenticated', this._doAuthentication.bind(this))
+    this.lock.on('authenticated', this._doAuthentication.bind(this));
     // binds login functions to keep this context
     this.login = this.login.bind(this)
   }
 
   _doAuthentication(authResult) {
     // Saves the user token
-    this.setToken(authResult.idToken)
+    this.setToken(authResult.idToken);
     // navigate to the home route
    // browserHistory.replace('/home')
 

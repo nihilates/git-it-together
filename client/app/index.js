@@ -10,7 +10,8 @@ console.log('service', repoService);
 
 
 
-const auth = new AuthService('X5MiErhjYO21MdTVoiLZccQA123jBgla', 'sdm.auth0.com');
+// const auth = new AuthService('X5MiErhjYO21MdTVoiLZccQA123jBgla', 'sdm.auth0.com');
+const auth = new AuthService('NkE8dPk50dIKAPS6cbUHmntrs1m8aATB', 'mohammadfarooqi.auth0.com');
 console.log(auth);
 const repod = new repoService();
 console.log(repod);
