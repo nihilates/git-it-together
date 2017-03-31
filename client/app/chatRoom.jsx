@@ -130,20 +130,6 @@ var ChatApp = React.createClass({
     socket.emit('message', message);
   },
 
-//FLAGGED FOR DEATH
-  // handleSubmit(e) {
-  //   e.preventDefault();
-  //   var message = {
-  //     user : this.props.user,
-  //     text : this.state.text,
-  //     room: this.props.room,
-  //     createdAt: moment.utc().format()
-  //   }
-  //   this.props.onMessageSubmit(message);
-  //   this.setState({ text: '' });
-  // },
-
-//FLAGGED FOR DEATH^
   changeHandler(e) {
     this.setState({ searchTerms : e.target.value });
   },
