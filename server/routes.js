@@ -8,9 +8,10 @@ module.exports = function (app, express) {
   app.delete('/api/resources', requestHandler.deleteResource);
   app.get('/api/resources', requestHandler.listResources);
   app.post('/api/project', requestHandler.fetchProject);
+  app.post('/api/adjust/deliverables', requestHandler.adjustDeliverable);
   app.post('/api/deliverables', requestHandler.addDeliverable);
   app.delete('/api/deliverables', requestHandler.deleteDeliverable);
   app.get('/api/deliverables', requestHandler.listDeliverables);
   app.post('/api/listRepos', requestHandler.listRepos);
-  app.delete('/api/projectList', requestHandler.deleteUserProject)
+  app.delete('/api/projectList', requestHandler.deleteUserProject);
 };

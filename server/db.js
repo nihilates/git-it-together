@@ -1,8 +1,4 @@
 var Sequelize = require('sequelize');
-<<<<<<< HEAD
-=======
-//var DatabaseSettings = require('../settings.js');
->>>>>>> fixed auth0 issues
 
 //connect to Heroku PostGres Database
 // var db = new Sequelize("postgres://xhzrrvvawqzqov:1c2ac54a72b223e5d603ce03d8195194ac39336f544c04b266758f083aea4a15@ec2-23-23-228-115.compute-1.amazonaws.com:5432/d5lfn726hf4pp6?ssl=true", {"dialect":"postgres", "ssl":true, "dialectOptions":{"ssl":{"require":true}}});

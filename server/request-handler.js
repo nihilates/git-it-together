@@ -156,10 +156,9 @@ exports.addDeliverable = (req, res) => {
   var dueDate = req.body.dueDate;
   var progress = req.body.progress;
   var points = req.body.points;
-
-  console.log('NEW DELIVERABLE', req.body);
-
-  db.Deliverable.create({project_id: projectID, owner: owner, task: task, status: status, due_date: dueDate, progress: progress, points: points})
+  var newDeliv = {project_id: projectID, owner: owner, task: task, status: status, due_date: dueDate, progress: progress, points: points};
+  console.log(newDeliv);
+  db.Deliverable.create(newDeliv)
   .then( (deliverables) => {
     var deliverableData = deliverables.dataValues;
     res.status(201).send(deliverableData);
@@ -174,11 +173,79 @@ exports.deleteDeliverable = (req, res) => {
 };
 
 exports.listDeliverables = (req, res) => {
-  db.Deliverable.findAll({where: {project_id: req.query.id}, raw: true})
-    .then((deliverables) => {
-      res.status(200).send(deliverables);
-    });
+  var projectID = req.query.id;
+  db.Project.findOne({where: {id: projectID}}).then((project) => {
+    console.log(project.get_repo);
+    request({
+      url: project.get_repo + '/issues',
+      headers: {'User-Agent': project.owner}
+    }, (err, resp, body) => {
+      if (err) {
+        res.status(404).send();
+      } else {
+        console.log('\n\n*******************************\n' + JSON.stringify(body));
+        var delivList = [];
+        body = JSON.parse(body);
+        for (var issue of body) {
+          console.log(issue);
+          var deliv = {
+            projectID: req.query.id,
+            owner: issue.user.login,
+            task: issue.title,
+            progress: issue.state,
+            status: 'backlog',
+            points: 0
+          }
+          delivList.push(deliv);
+        }
+        res.send(delivList);
+      }
+    })
+  });
+    // request.get(project.get_repo + '/issues').on('response', (response) => {
+    //   var delivList = [];
+    //   for (var issue in response) {
+    //     var deliv = {
+    //       projectID: req.query.id,
+    //       owner: issue.user.login,
+    //       task: issue.title,
+    //       status: issue.state,
+    //       progress: 'backlog',
+    //       points: 0
+    //     }
+    //   }
+    // })
+    // .on('error', (err) => {
+    //   res.status(404).send();
+    // });
+  // db.Deliverable.findAll({where: {project_id: req.query.id}, raw: true})
+  //   .then((deliverables) => {
+  //     res.status(200).send(deliverables);
+  //   });
 };
+
+exports.adjustDeliverable = (req, res) => {
+  db.Deliverable.findOne({where: {id: req.body.id}}).then((deliverable) => {
+    var owner = req.body.owner || deliverable.owner;
+    var task = req.body.task || deliverable.task;
+    var status = req.body.status || deliverable.status;
+    var dueDate = req.body.dueDate || deliverable.due_date;
+    var progress = req.body.progress || deliverable.progress;
+    var points = req.body.points || deliverable.points;
+
+    db.Deliverable.update(
+      {
+        owner: owner,
+        task: task,
+        status: status,
+        due_date: dueDate,
+        progress: progress,
+        points: points
+      },
+      {where: {id: deliverable.id}}
+    ).then(() => { res.end() });
+  });
+}
 
 //---------------------------------------------------------------------------
 // fetchProject Request Format: {projectID: 123}

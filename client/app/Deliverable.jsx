@@ -119,6 +119,13 @@ class List extends React.Component {
     });
   }
 
+  adjustDeliverable(deliverableID) {
+    axios.post('/api/adjust/deliverables', {id: deliverableID, owner: 'Chuck Norris'})
+    .then(function(response) {
+      socket.emit('change', 'post');
+    })
+  }
+
   render() {
     if (this.state.deliverables === null) {
       return (
@@ -143,7 +150,7 @@ class List extends React.Component {
               </thead>
               <tbody>
                 {this.state.deliverables.current.map((deliverable) =>
-                  <Deliverable deliverable={deliverable} deleteDeliverable={this.deleteDeliverable.bind(this)} />
+                  <Deliverable deliverable={deliverable} deleteDeliverable={this.deleteDeliverable.bind(this)} adjustDeliverable={this.adjustDeliverable.bind(this)}/>
                 )}
               </tbody>
             </table>
@@ -164,7 +171,7 @@ class List extends React.Component {
               </thead>
               <tbody>
                 {this.state.deliverables.backlog.map((deliverable) =>
-                  <Deliverable deliverable={deliverable} deleteDeliverable={this.deleteDeliverable.bind(this)} />
+                  <Deliverable deliverable={deliverable} deleteDeliverable={this.deleteDeliverable.bind(this)} adjustDeliverable={this.adjustDeliverable.bind(this)}/>
                 )}
               </tbody>
             </table>
@@ -185,7 +192,7 @@ class List extends React.Component {
               </thead>
               <tbody>
                 {this.state.deliverables.icebox.map((deliverable) =>
-                  <Deliverable deliverable={deliverable} deleteDeliverable={this.deleteDeliverable.bind(this)} />
+                  <Deliverable deliverable={deliverable} deleteDeliverable={this.deleteDeliverable.bind(this)} adjustDeliverable={this.adjustDeliverable.bind(this)}/>
                 )}
               </tbody>
             </table>
@@ -202,11 +209,12 @@ class List extends React.Component {
                   <th>Asignee</th>
                   <th>Complexity</th>
                   <th></th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
                 {this.state.deliverables.complete.map((deliverable) =>
-                  <Deliverable deliverable={deliverable} deleteDeliverable={this.deleteDeliverable.bind(this)} />
+                  <Deliverable deliverable={deliverable} deleteDeliverable={this.deleteDeliverable.bind(this)} adjustDeliverable={this.adjustDeliverable.bind(this)}/>
                 )}
               </tbody>
             </table>
@@ -217,13 +225,14 @@ class List extends React.Component {
   }
 }
 
-var Deliverable = ({deliverable, deleteDeliverable}) => (
+var Deliverable = ({deliverable, deleteDeliverable, adjustDeliverable}) => (
   <tr>
     <th scope="row">{deliverable.id}</th>
     <td>{deliverable.task}</td>
     <td>{deliverable.owner}</td>
     <td>{deliverable.points}</td>
     <td><i className="fa fa-times right" aria-hidden="true" onClick={() => deleteDeliverable(deliverable.id)}></i></td>
+    <td><button onClick={() => adjustDeliverable(deliverable.id)}>Edit</button></td>
   </tr>
 );
 
