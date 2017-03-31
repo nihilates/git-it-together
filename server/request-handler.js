@@ -156,6 +156,9 @@ exports.addDeliverable = (req, res) => {
   var dueDate = req.body.dueDate;
   var progress = req.body.progress;
   var points = req.body.points;
+
+  console.log('NEW DELIVERABLE', req.body);
+
   db.Deliverable.create({project_id: projectID, owner: owner, task: task, status: status, due_date: dueDate, progress: progress, points: points})
   .then( (deliverables) => {
     var deliverableData = deliverables.dataValues;
