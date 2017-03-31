@@ -103,7 +103,7 @@ var MessageForm = React.createClass({
 var ChatApp = React.createClass({
 
   getInitialState() {
-    return {messages:[], text: ''};
+    return {messages:[], searchTerms: ''};
   },
 
   componentDidMount() {
@@ -130,10 +130,47 @@ var ChatApp = React.createClass({
     socket.emit('message', message);
   },
 
+  changeHandler(e) {
+    this.setState({ searchTerms : e.target.value });
+  },
+
+  printChat(e) {
+    e.preventDefault();//stops page from automatically refreshing
+    var results = [];//container for matching chat messages
+    var log = this.state.messages;//sets log to be the current cache of messages
+    var terms = this.state.searchTerms.replace(/ /g, '').split(',');//removed empty space and breaks string of search terms into array seperated by comma
+    var record = {};//bank to store already found terms, to avoid duplicates
+
+    for (let msg=0; msg<log.length; msg++) {//for each message in the chat log...
+      for (let term=0; term<terms.length; term++) {//and for each term in our search...
+        if (log[msg].text.includes(terms[term]) ) {//if the given term is somewhere in the chat log...
+          if (!record[ log[msg].createdAt ]) {//and if that a specific chat message isn't already tracked...
+            results.push(log[msg]);//add the entire chat data to the results array
+            record[ log[msg].createdAt ] = true;//and track that the chat has been added, to avoid duplicates
+          }
+        }
+      }
+    }
+    //HERE IS THE PLACE TO BEGIN EXPORTING CHAT LOGS
+    this.setState({searchTerms: ''})
+  },
+
   render() {
     return (
       <div>
         <h2>Chat about {this.props.room}</h2>
+        <form id="searchChat" onSubmit={this.printChat}>
+          <div className="col-10">
+            <input id="chatTerms" placeholder="Search chats"
+              onChange={this.changeHandler}
+              value={this.state.searchTerms}
+              className="form-control mb-2 mr-sm-2 mb-sm-0"
+            />
+          </div>
+          <div className="col-2">
+            <button type="submit" className="btn btn-sm btn-default">Export</button>
+          </div>
+        </form>
         <hr />
         <MessageList
           messages={this.state.messages}
