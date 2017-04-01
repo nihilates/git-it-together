@@ -7,8 +7,10 @@
 
 import React from 'react';
 import ReactDom from 'react-dom';
+
 var socket = io('/io/chatroom');
 var moment = require('moment-timezone');
+var dwnLoad = require('react-file-download');
 
 var Message = React.createClass({
   render() {
@@ -103,14 +105,20 @@ var MessageForm = React.createClass({
 var Exporter = React.createClass({
   handleSubmit(e) {
     e.preventDefault();//stops page from automatically refreshing
-    //HERE IS THE PLACE TO BEGIN EXPORTING CHAT LOGS
-    console.log(this.props.chatLog);
+    var scrubber = function(log) {
+      var data = '#,User,Message,Time Posted,Room\n';
+      for (let i=0; i<log.length; i++) {
+        data+=[i+1,log[i].user, JSON.stringify(log[i].text), log[i].createdAt, log[i].room+'\n'].join();
+      }
+      return data;
+    };
+    dwnLoad(scrubber(this.props.chatLog), 'GOLDENFILE.csv');
   },
 
   render() {
     return (
       <form id="searchChat" onSubmit={this.handleSubmit}>
-          <button type="submit" className="btn btn-sm btn-default">Export</button>
+        <button type="submit" className="btn btn-sm btn-default">Export</button>
       </form>
     );
   }
@@ -156,7 +164,7 @@ var ChatApp = React.createClass({
 
     for (let msg=0; msg<log.length; msg++) {//for each message in the chat log...
       for (let term=0; term<terms.length; term++) {//and for each term in our search...
-        if (log[msg].text.includes(terms[term]) ) {//if the given term is somewhere in the chat log...
+        if (log[msg].text.toLowerCase().includes(terms[term].toLowerCase() ) ) {//if the given term is somewhere in the chat log...
           if (!record[ log[msg].createdAt ]) {//and if that a specific chat message isn't already tracked...
             results.push(log[msg]);//add the entire chat data to the results array
             record[ log[msg].createdAt ] = true;//and track that the chat has been added, to avoid duplicates
