@@ -157,7 +157,6 @@ var Resource = ({resource, deleteResource, customValidateText, dataChanged}) => 
                 border: 0
               }}
               className="resourceName"
-              editing={() => { console.log('i am here'); } }
             />
 
     <i className="fa fa-external-link externalLink" aria-hidden="true" onClick={() =>
