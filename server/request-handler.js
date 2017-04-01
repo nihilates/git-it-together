@@ -1,6 +1,7 @@
 var db = require('./db_config.js');
 var http = require('http');
 var request = require('request');
+var og = require('open-graph');
 
 //---------------------------------------------------------------------------
 // addProject Request Format: {githubHandle: 'handle, repoName: 'reponame'}
@@ -108,13 +109,24 @@ exports.addResource = (req, res) => {
   var name = req.body.name;
   var user = req.body.user;
   if (!name) {
-    name = link;
+    //use opengraph
+    og(link, function (err, meta) {
+      // console.log('og: ', link);
+      console.log(meta);
+
+      if (meta && meta.title) {
+        name = meta.title;
+      } else {
+        name = link;
+      }
+
+      db.Resource.create({project_id: projectID, link: link, name: name, user: user})
+      .then( (resources) => {
+        var resourceData = resources.dataValues;
+        res.status(201).send();
+      });
+    });
   }
-  db.Resource.create({project_id: projectID, link: link, name: name, user: user})
-  .then( (resources) => {
-    var resourceData = resources.dataValues;
-    res.status(201).send();
-  });
 };
 
 exports.deleteResource = (req, res) => {
