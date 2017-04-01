@@ -358,10 +358,15 @@ a.repoNav {
   margin: 0 15px 5px 0;
 }
 
+.externalLink {
+  margin: 0 15px 5px 0;
+  cursor: pointer;
+}
+
 .resourceName {
   font-weight: bold;
   margin: 0 8px;
-  cursor: pointer;
+  /*cursor: pointer;*/
 }
 
 .resourceName:hover {
