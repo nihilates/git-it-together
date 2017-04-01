@@ -294,6 +294,10 @@ benefit: their scalability and you don't have to adjust the px value of everythi
   margin-top: 1.5em;
 }
 
+.message_form {
+  position: relative;
+}
+
 /*Add Repo Styles ------------------------------------------------------------------*/
 .repoAddMessage {
   font-size: 14px;

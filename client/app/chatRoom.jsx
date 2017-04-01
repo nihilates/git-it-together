@@ -179,16 +179,16 @@ var ChatApp = React.createClass({
     return (
       <div>
         <h2>Chat about {this.props.room}</h2>
-          <form id="searchChat">
-              <input type="search" id="chatTerms" placeholder="Search chats"
-                onChange={this.changeHandler}
-                value={this.state.searchTerms}
-                className="form-control mb-2 mr-sm-2 mb-sm-0"
-              />
+        <form id="searchChat">
+            <input type="search" id="chatTerms" placeholder="Search chats"
+              onChange={this.changeHandler}
+              value={this.state.searchTerms}
+              className="form-control mb-2 mr-sm-2 mb-sm-0"
+            />
           <Exporter
             chatLog={(this.state.searchTerms.length) ? this.state.parsedChats : this.state.messages}
             />
-          </form>
+        </form>
         <hr />
         <MessageList
           messages={(this.state.searchTerms.length) ? this.state.parsedChats : this.state.messages}
