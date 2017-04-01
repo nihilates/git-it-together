@@ -112,11 +112,37 @@ class List extends React.Component {
   }
 
   deleteDeliverable(deliverableID) {
-    axios.delete('/api/deliverables?id=' + deliverableID)
+    axios.delete('/api/deliverables?id=' + deliverableID + '&pid=' + this.state.project.id)
     .then(function(response) {
       // Tell other clients a change occured
       socket.emit('change', 'delete');
     });
+  }
+
+  adjustDeliverable(deliverable, str) {
+    var obj = {id: deliverable.id, pid: this.state.project.id}
+    if (str === 'up') {
+      if (deliverable.status === 'backlog') {
+        obj.status = 'current';
+      } else if (deliverable.status === 'icebox') {
+        obj.status = 'backlog';
+      } else if (deliverable.status === 'complete') {
+        obj.status = 'icebox';
+      }
+    } else if (str === 'down') {
+      if (deliverable.status === 'current') {
+        obj.status = 'backlog';
+      } else if (deliverable.status === 'backlog') {
+        obj.status = 'icebox';
+      } else if (deliverable.status === 'icebox') {
+        obj.status = 'complete';
+      }
+    }
+
+    axios.post('/api/adjust/deliverables', obj)
+    .then(function(response) {
+      socket.emit('change', 'post');
+    })
   }
 
   render() {
@@ -138,12 +164,12 @@ class List extends React.Component {
                   <th>Description</th>
                   <th>Assignee</th>
                   <th>Complexity</th>
-                  <th></th>
+                  <th>Edit</th>
                 </tr>
               </thead>
               <tbody>
                 {this.state.deliverables.current.map((deliverable) =>
-                  <Deliverable deliverable={deliverable} deleteDeliverable={this.deleteDeliverable.bind(this)} />
+                  <Deliverable deliverable={deliverable} deleteDeliverable={this.deleteDeliverable.bind(this)} adjustDeliverable={this.adjustDeliverable.bind(this)}/>
                 )}
               </tbody>
             </table>
@@ -153,18 +179,18 @@ class List extends React.Component {
           </div>
           <div className="deliverables-section-body">
             <table className="table table-hover table-bordered table-sm">
-              <thead className="hideMe">
+              <thead>
                 <tr>
                   <th>ID</th>
                   <th>Description</th>
                   <th>Asignee</th>
                   <th>Complexity</th>
-                  <th></th>
+                  <th>Edit</th>
                 </tr>
               </thead>
               <tbody>
                 {this.state.deliverables.backlog.map((deliverable) =>
-                  <Deliverable deliverable={deliverable} deleteDeliverable={this.deleteDeliverable.bind(this)} />
+                  <Deliverable deliverable={deliverable} deleteDeliverable={this.deleteDeliverable.bind(this)} adjustDeliverable={this.adjustDeliverable.bind(this)}/>
                 )}
               </tbody>
             </table>
@@ -174,18 +200,18 @@ class List extends React.Component {
           </div>
           <div className="deliverables-section-body">
             <table className="table table-hover table-bordered table-sm">
-              <thead className="hideMe">
+              <thead>
                 <tr>
                   <th>ID</th>
                   <th>Description</th>
                   <th>Asignee</th>
                   <th>Complexity</th>
-                  <th></th>
+                  <th>Edit</th>
                 </tr>
               </thead>
               <tbody>
                 {this.state.deliverables.icebox.map((deliverable) =>
-                  <Deliverable deliverable={deliverable} deleteDeliverable={this.deleteDeliverable.bind(this)} />
+                  <Deliverable deliverable={deliverable} deleteDeliverable={this.deleteDeliverable.bind(this)} adjustDeliverable={this.adjustDeliverable.bind(this)}/>
                 )}
               </tbody>
             </table>
@@ -195,18 +221,18 @@ class List extends React.Component {
           </div>
           <div className="deliverables-section-body">
             <table className="table table-hover table-bordered table-sm">
-              <thead className="hideMe">
+              <thead>
                 <tr>
                   <th>ID</th>
                   <th>Description</th>
                   <th>Asignee</th>
                   <th>Complexity</th>
-                  <th></th>
+                  <th>Edit</th>
                 </tr>
               </thead>
               <tbody>
                 {this.state.deliverables.complete.map((deliverable) =>
-                  <Deliverable deliverable={deliverable} deleteDeliverable={this.deleteDeliverable.bind(this)} />
+                  <Deliverable deliverable={deliverable} deleteDeliverable={this.deleteDeliverable.bind(this)} adjustDeliverable={this.adjustDeliverable.bind(this)}/>
                 )}
               </tbody>
             </table>
@@ -217,13 +243,18 @@ class List extends React.Component {
   }
 }
 
-var Deliverable = ({deliverable, deleteDeliverable}) => (
+      // <img src="/client/assets/upArrow.png" className="category-change-button" onClick={() => {adjustDeliverable(deliverable, 'up')}}/>
+      // <img src="/client/assets/downArrow.png" className="category-change-button" onClick={() => {adjustDeliverable(deliverable, 'down')}}/>
+
+var Deliverable = ({deliverable, deleteDeliverable, adjustDeliverable}) => (
   <tr>
     <th scope="row">{deliverable.id}</th>
     <td>{deliverable.task}</td>
     <td>{deliverable.owner}</td>
     <td>{deliverable.points}</td>
-    <td><i className="fa fa-times right" aria-hidden="true" onClick={() => deleteDeliverable(deliverable.id)}></i></td>
+    <td>
+      <i className="fa fa-times right" aria-hidden="true" onClick={() => deleteDeliverable(deliverable.id)}></i>
+    </td>
   </tr>
 );
 

@@ -204,6 +204,12 @@ benefit: their scalability and you don't have to adjust the px value of everythi
   color: #2d2d2d;
 }
 
+.category-change-button {
+  max-height: 20px;
+  max-width: 20px;
+  margin-left: 10px;
+}
+
 /*Overwrite the default heading color we just chose since we're changing the background*/
 .deliverables-section-header h3 {
   margin: 0;
