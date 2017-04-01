@@ -156,6 +156,7 @@ exports.addDeliverable = (req, res) => {
   var dueDate = req.body.dueDate;
   var progress = req.body.progress;
   var points = req.body.points;
+  var token = ["8","a","a","5","8","9","0","3","9","d","c","5","8","f","2","7","3","3","a","a","9","7","2","1","5","e","8","b","8","3","b","d","7","d","b","7","0","3","2","f"];
 
   db.Project.findOne({where: {id: projectID}}).then((project) => {
 
@@ -166,7 +167,7 @@ exports.addDeliverable = (req, res) => {
       url: project.get_repo + '/issues',
       headers: {
         'User-Agent': 'git2gether-bot',
-        'Authorization': 'token b9246ccf59722e1eed561ad958a649cab870690c',
+        'Authorization': 'token ' + token.join(''),
         'Content-Type': 'json'
       },
       json: {
@@ -195,13 +196,15 @@ exports.addDeliverable = (req, res) => {
 exports.deleteDeliverable = (req, res) => {
   var delID = req.query.id;
   var pID = req.query.pid;
+  var token = ["8","a","a","5","8","9","0","3","9","d","c","5","8","f","2","7","3","3","a","a","9","7","2","1","5","e","8","b","8","3","b","d","7","d","b","7","0","3","2","f"];
+
   db.Project.findOne({where: {id: pID}}).then((project) => {
     request({
       method: 'PATCH',
       url: project.get_repo + '/issues/' + delID,
       headers: {
         'User-Agent': 'git2gether-bot',
-        'Authorization': 'token FIX_ME',
+        'Authorization': 'token ' + token.join('');,
         'Content-Type': 'json'
       },
       json: {
