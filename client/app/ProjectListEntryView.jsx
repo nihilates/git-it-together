@@ -1,8 +1,10 @@
 import React from 'react';
 import ProjectList from './ProjectList.jsx';
+import { Link } from 'react-router'
 
 
 var ProjectListEntry = ({project, handleProjectListEntryClick}) => (
+    <Link  to={`/details/${project.owner}/${project.name}`} style={{ textDecoration: 'none', color: 'black' }}>
   <div className="project-list-entry" onClick={() => handleProjectListEntryClick(project)}>
     <div className="project-body">
       <div className="row">
@@ -18,6 +20,7 @@ var ProjectListEntry = ({project, handleProjectListEntryClick}) => (
       </div>
     </div>
   </div>
+    </Link>
 );
 
 ProjectListEntry.propTypes = {
