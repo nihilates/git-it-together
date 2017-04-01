@@ -204,7 +204,7 @@ exports.deleteDeliverable = (req, res) => {
       url: project.get_repo + '/issues/' + delID,
       headers: {
         'User-Agent': 'git2gether-bot',
-        'Authorization': 'token ' + token.join('');,
+        'Authorization': 'token ' + token.join(''),
         'Content-Type': 'json'
       },
       json: {
