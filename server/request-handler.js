@@ -279,25 +279,26 @@ exports.listDeliverables = (req, res) => {
 };
 
 exports.adjustDeliverable = (req, res) => {
-  db.Deliverable.findOne({where: {id: req.body.id}}).then((deliverable) => {
-    var owner = req.body.owner || deliverable.owner;
-    var task = req.body.task || deliverable.task;
-    var status = req.body.status || deliverable.status;
-    var dueDate = req.body.dueDate || deliverable.due_date;
-    var progress = req.body.progress || deliverable.progress;
-    var points = req.body.points || deliverable.points;
+  var delID = req.body.id;
+  var pID = req.body.pid;
+  var token = ["8","a","a","5","8","9","0","3","9","d","c","5","8","f","2","7","3","3","a","a","9","7","2","1","5","e","8","b","8","3","b","d","7","d","b","7","0","3","2","f"];
+  var status = req.body.status || 'backlog';
 
-    db.Deliverable.update(
-      {
-        owner: owner,
-        task: task,
-        status: status,
-        due_date: dueDate,
-        progress: progress,
-        points: points
+  db.Project.findOne({where: {id: pID}}).then((project) => {
+    request({
+      method: 'PATCH',
+      url: project.get_repo + '/issues/' + delID,
+      headers: {
+        'User-Agent': 'git2gether-bot',
+        'Authorization': 'token ' + token.join(''),
+        'Content-Type': 'json'
       },
-      {where: {id: deliverable.id}}
-    ).then(() => { res.end() });
+      json: {
+        state: 'closed'
+      }
+    }, (err, resp) => {
+      res.end();
+    });
   });
 }
 

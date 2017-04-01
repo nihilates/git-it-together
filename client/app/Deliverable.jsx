@@ -119,8 +119,27 @@ class List extends React.Component {
     });
   }
 
-  adjustDeliverable(deliverableID) {
-    axios.post('/api/adjust/deliverables', {id: deliverableID, owner: 'Chuck Norris'})
+  adjustDeliverable(deliverable, str) {
+    var obj = {id: deliverable.id, pid: this.state.project.id}
+    if (str === 'up') {
+      if (deliverable.status === 'backlog') {
+        obj.status = 'current';
+      } else if (deliverable.status === 'icebox') {
+        obj.status = 'backlog';
+      } else if (deliverable.status === 'complete') {
+        obj.status = 'icebox';
+      }
+    } else if (str === 'down') {
+      if (deliverable.status === 'current') {
+        obj.status = 'backlog';
+      } else if (deliverable.status === 'backlog') {
+        obj.status = 'icebox';
+      } else if (deliverable.status === 'icebox') {
+        obj.status = 'complete';
+      }
+    }
+
+    axios.post('/api/adjust/deliverables', obj)
     .then(function(response) {
       socket.emit('change', 'post');
     })
@@ -145,7 +164,7 @@ class List extends React.Component {
                   <th>Description</th>
                   <th>Assignee</th>
                   <th>Complexity</th>
-                  <th></th>
+                  <th>Edit</th>
                 </tr>
               </thead>
               <tbody>
@@ -160,13 +179,13 @@ class List extends React.Component {
           </div>
           <div className="deliverables-section-body">
             <table className="table table-hover table-bordered table-sm">
-              <thead className="hideMe">
+              <thead>
                 <tr>
                   <th>ID</th>
                   <th>Description</th>
                   <th>Asignee</th>
                   <th>Complexity</th>
-                  <th></th>
+                  <th>Edit</th>
                 </tr>
               </thead>
               <tbody>
@@ -181,13 +200,13 @@ class List extends React.Component {
           </div>
           <div className="deliverables-section-body">
             <table className="table table-hover table-bordered table-sm">
-              <thead className="hideMe">
+              <thead>
                 <tr>
                   <th>ID</th>
                   <th>Description</th>
                   <th>Asignee</th>
                   <th>Complexity</th>
-                  <th></th>
+                  <th>Edit</th>
                 </tr>
               </thead>
               <tbody>
@@ -202,14 +221,13 @@ class List extends React.Component {
           </div>
           <div className="deliverables-section-body">
             <table className="table table-hover table-bordered table-sm">
-              <thead className="hideMe">
+              <thead>
                 <tr>
                   <th>ID</th>
                   <th>Description</th>
                   <th>Asignee</th>
                   <th>Complexity</th>
-                  <th></th>
-                  <th></th>
+                  <th>Edit</th>
                 </tr>
               </thead>
               <tbody>
@@ -225,14 +243,18 @@ class List extends React.Component {
   }
 }
 
+      // <img src="/client/assets/upArrow.png" className="category-change-button" onClick={() => {adjustDeliverable(deliverable, 'up')}}/>
+      // <img src="/client/assets/downArrow.png" className="category-change-button" onClick={() => {adjustDeliverable(deliverable, 'down')}}/>
+
 var Deliverable = ({deliverable, deleteDeliverable, adjustDeliverable}) => (
   <tr>
     <th scope="row">{deliverable.id}</th>
     <td>{deliverable.task}</td>
     <td>{deliverable.owner}</td>
     <td>{deliverable.points}</td>
-    <td><i className="fa fa-times right" aria-hidden="true" onClick={() => deleteDeliverable(deliverable.id)}></i></td>
-    <td><button onClick={() => adjustDeliverable(deliverable.id)}>Edit</button></td>
+    <td>
+      <i className="fa fa-times right" aria-hidden="true" onClick={() => deleteDeliverable(deliverable.id)}></i>
+    </td>
   </tr>
 );
 
