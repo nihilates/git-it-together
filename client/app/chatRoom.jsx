@@ -7,8 +7,10 @@
 
 import React from 'react';
 import ReactDom from 'react-dom';
+
 var socket = io('/io/chatroom');
 var moment = require('moment-timezone');
+var dwnLoad = require('react-file-download');
 
 var Message = React.createClass({
   render() {
@@ -99,11 +101,34 @@ var MessageForm = React.createClass({
   }
 });
 
+// Search Chat component:
+var Exporter = React.createClass({
+  handleSubmit(e) {
+    e.preventDefault();//stops page from automatically refreshing
+    var scrubber = function(log) {
+      var data = '#,User,Message,Time Posted,Room\n';
+      for (let i=0; i<log.length; i++) {
+        data+=[i+1,log[i].user, JSON.stringify(log[i].text), log[i].createdAt, log[i].room+'\n'].join();
+      }
+      return data;
+    };
+    dwnLoad(scrubber(this.props.chatLog), 'GOLDENFILE.csv');
+  },
+
+  render() {
+    return (
+      <form id="searchChat" onSubmit={this.handleSubmit}>
+        <button type="submit" className="btn btn-sm btn-default">Export</button>
+      </form>
+    );
+  }
+});
+
 // Main component:
 var ChatApp = React.createClass({
 
   getInitialState() {
-    return {messages:[], searchTerms: ''};
+    return {messages:[], searchTerms: '', parsedChats: []};
   },
 
   componentDidMount() {
@@ -117,7 +142,6 @@ var ChatApp = React.createClass({
     var {messages} = this.state;
     messages.push(message);
     this.setState({messages});
-    console.log('MESSAGES: ------> ', this.state.messages);
   },
 
   _savedMessagesReceive(messages) {
@@ -130,20 +154,17 @@ var ChatApp = React.createClass({
     socket.emit('message', message);
   },
 
-  changeHandler(e) {
+  changeHandler(e) {//method to automatically update what's visible in the chatlog
     this.setState({ searchTerms : e.target.value });
-  },
 
-  printChat(e) {
-    e.preventDefault();//stops page from automatically refreshing
     var results = [];//container for matching chat messages
     var log = this.state.messages;//sets log to be the current cache of messages
-    var terms = this.state.searchTerms.replace(/ /g, '').split(',');//removed empty space and breaks string of search terms into array seperated by comma
+    var terms = this.state.searchTerms.replace(/, /g, ',').split(',');//removed empty space and breaks string of search terms into array seperated by comma
     var record = {};//bank to store already found terms, to avoid duplicates
 
     for (let msg=0; msg<log.length; msg++) {//for each message in the chat log...
       for (let term=0; term<terms.length; term++) {//and for each term in our search...
-        if (log[msg].text.includes(terms[term]) ) {//if the given term is somewhere in the chat log...
+        if (log[msg].text.toLowerCase().includes(terms[term].toLowerCase() ) ) {//if the given term is somewhere in the chat log...
           if (!record[ log[msg].createdAt ]) {//and if that a specific chat message isn't already tracked...
             results.push(log[msg]);//add the entire chat data to the results array
             record[ log[msg].createdAt ] = true;//and track that the chat has been added, to avoid duplicates
@@ -151,29 +172,26 @@ var ChatApp = React.createClass({
         }
       }
     }
-    //HERE IS THE PLACE TO BEGIN EXPORTING CHAT LOGS
-    this.setState({searchTerms: ''})
+    this.setState({parsedChats: results});//set the parsedChats to the results array
   },
 
   render() {
     return (
       <div>
         <h2>Chat about {this.props.room}</h2>
-        <form id="searchChat" onSubmit={this.printChat}>
-          <div className="col-10">
-            <input id="chatTerms" placeholder="Search chats"
-              onChange={this.changeHandler}
-              value={this.state.searchTerms}
-              className="form-control mb-2 mr-sm-2 mb-sm-0"
+          <form id="searchChat">
+              <input type="search" id="chatTerms" placeholder="Search chats"
+                onChange={this.changeHandler}
+                value={this.state.searchTerms}
+                className="form-control mb-2 mr-sm-2 mb-sm-0"
+              />
+          <Exporter
+            chatLog={(this.state.searchTerms.length) ? this.state.parsedChats : this.state.messages}
             />
-          </div>
-          <div className="col-2">
-            <button type="submit" className="btn btn-sm btn-default">Export</button>
-          </div>
-        </form>
+          </form>
         <hr />
         <MessageList
-          messages={this.state.messages}
+          messages={(this.state.searchTerms.length) ? this.state.parsedChats : this.state.messages}
         />
         <MessageForm
           onMessageSubmit={this.handleMessageSubmit}
