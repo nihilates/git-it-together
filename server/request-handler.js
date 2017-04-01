@@ -156,13 +156,36 @@ exports.addDeliverable = (req, res) => {
   var dueDate = req.body.dueDate;
   var progress = req.body.progress;
   var points = req.body.points;
-  var newDeliv = {project_id: projectID, owner: owner, task: task, status: status, due_date: dueDate, progress: progress, points: points};
-  console.log(newDeliv);
-  db.Deliverable.create(newDeliv)
-  .then( (deliverables) => {
-    var deliverableData = deliverables.dataValues;
-    res.status(201).send(deliverableData);
+
+  db.Project.findOne({where: {id: projectID}}).then((project) => {
+
+    var metaData = '$$git2gether-meta$$' + JSON.stringify({points: points, status: status}) + '$$/git2gether-meta$$';
+
+    request({
+      method: 'POST',
+      url: project.get_repo + '/issues',
+      headers: {'User-Agent': owner},
+      data: {
+        title: task,
+        body: metaData
+      }
+    }, (err, resp) => {
+      console.log()
+      if (err) {
+        res.status(404).send();
+      } else {
+        res.end();
+      }
+    });
   });
+
+  // var newDeliv = {project_id: projectID, owner: owner, task: task, status: status, due_date: dueDate, progress: progress, points: points};
+  // console.log(newDeliv);
+  // db.Deliverable.create(newDeliv)
+  // .then( (deliverables) => {
+  //   var deliverableData = deliverables.dataValues;
+  //   res.status(201).send(deliverableData);
+  // });
 };
 
 exports.deleteDeliverable = (req, res) => {
