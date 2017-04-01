@@ -112,7 +112,7 @@ class List extends React.Component {
   }
 
   deleteDeliverable(deliverableID) {
-    axios.delete('/api/deliverables?id=' + deliverableID)
+    axios.delete('/api/deliverables?id=' + deliverableID + '&pid=' + this.state.project.id)
     .then(function(response) {
       // Tell other clients a change occured
       socket.emit('change', 'delete');

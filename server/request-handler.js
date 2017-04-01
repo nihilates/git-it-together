@@ -159,18 +159,22 @@ exports.addDeliverable = (req, res) => {
 
   db.Project.findOne({where: {id: projectID}}).then((project) => {
 
-    var metaData = '$$git2gether-meta$$' + JSON.stringify({points: points, status: status}) + '$$/git2gether-meta$$';
+    var metaData = '$$git2gether-meta$$' + JSON.stringify({points: points, status: status, owner: owner}) + '$$/git2gether-meta$$';
 
     request({
       method: 'POST',
       url: project.get_repo + '/issues',
-      headers: {'User-Agent': owner},
-      data: {
+      headers: {
+        'User-Agent': 'git2gether-bot',
+        'Authorization': 'token b9246ccf59722e1eed561ad958a649cab870690c',
+        'Content-Type': 'json'
+      },
+      json: {
         title: task,
         body: metaData
       }
     }, (err, resp) => {
-      console.log()
+      console.log(resp)
       if (err) {
         res.status(404).send();
       } else {
@@ -189,16 +193,29 @@ exports.addDeliverable = (req, res) => {
 };
 
 exports.deleteDeliverable = (req, res) => {
-  db.Deliverable.destroy({where: {id: req.query.id}})
-  .then((numRows) => {
-    res.status(200).send();
+  var delID = req.query.id;
+  var pID = req.query.pid;
+  db.Project.findOne({where: {id: pID}}).then((project) => {
+    request({
+      method: 'PATCH',
+      url: project.get_repo + '/issues/' + delID,
+      headers: {
+        'User-Agent': 'git2gether-bot',
+        'Authorization': 'token b9246ccf59722e1eed561ad958a649cab870690c',
+        'Content-Type': 'json'
+      },
+      json: {
+        state: 'closed'
+      }
+    }, (err, resp) => {
+      res.end();
+    });
   });
 };
 
 exports.listDeliverables = (req, res) => {
   var projectID = req.query.id;
   db.Project.findOne({where: {id: projectID}}).then((project) => {
-    console.log(project.get_repo);
     request({
       url: project.get_repo + '/issues',
       headers: {'User-Agent': project.owner}
@@ -206,18 +223,29 @@ exports.listDeliverables = (req, res) => {
       if (err) {
         res.status(404).send();
       } else {
-        console.log('\n\n*******************************\n' + JSON.stringify(body));
         var delivList = [];
         body = JSON.parse(body);
         for (var issue of body) {
-          console.log(issue);
+          var meta = {};
+          if(issue.body && issue.body.indexOf('$$git2gether-meta$$') !== -1) {
+            var begin = issue.body.indexOf('$$git2gether-meta$$') + 19;
+            var end = issue.body.indexOf('$$/git2gether-meta$$');
+            try {
+              meta = JSON.parse(issue.body.substring(begin, end));
+            } catch(e) {
+              meta = {};
+            }
+            console.log(meta);
+          }
+
           var deliv = {
             projectID: req.query.id,
-            owner: issue.user.login,
+            id: issue.number,
+            owner: meta.owner || 'git2gether-bot',
             task: issue.title,
             progress: issue.state,
-            status: 'backlog',
-            points: 0
+            status: meta.status || 'backlog',
+            points: meta.points || 0
           }
           delivList.push(deliv);
         }
