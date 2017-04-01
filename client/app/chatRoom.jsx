@@ -7,8 +7,10 @@
 
 import React from 'react';
 import ReactDom from 'react-dom';
+
 var socket = io('/io/chatroom');
 var moment = require('moment-timezone');
+var dwnLoad = require('react-file-download');
 
 var Message = React.createClass({
   render() {
@@ -103,14 +105,20 @@ var MessageForm = React.createClass({
 var Exporter = React.createClass({
   handleSubmit(e) {
     e.preventDefault();//stops page from automatically refreshing
-    //HERE IS THE PLACE TO BEGIN EXPORTING CHAT LOGS
-    console.log(this.props.chatLog);
+    var scrubber = function(log) {
+      var data = '#,User,Message,Time Posted,Room\n';
+      for (let i=0; i<log.length; i++) {
+        data+=[i+1,log[i].user, JSON.stringify(log[i].text), log[i].createdAt, log[i].room+'\n'].join();
+      }
+      return data;
+    };
+    dwnLoad(scrubber(this.props.chatLog), 'GOLDENFILE.csv');
   },
 
   render() {
     return (
       <form id="searchChat" onSubmit={this.handleSubmit}>
-          <button type="submit" className="btn btn-sm btn-default">Export</button>
+        <button type="submit" className="btn btn-sm btn-default">Export</button>
       </form>
     );
   }
