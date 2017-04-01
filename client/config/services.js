@@ -54,13 +54,13 @@ export default class repoService extends EventEmitter {
   }
 
   listUserProjects () {
-    var username = JSON.parse(localStorage.profile).nickname
+    var username = JSON.parse(localStorage.profile).nickname;
     getPros({username: username}, this.makeit.bind(this), this.setProjects.bind(this))
   }
 
   addUserProject(newProjectName) {
-    var username = JSON.parse(localStorage.profile).nickname
-    var newProjectObj ={githubHandle: username, repoName: newProjectName}
+    var username = JSON.parse(localStorage.profile).nickname;
+    var newProjectObj ={githubHandle: username, repoName: newProjectName};
     console.log('input', newProjectObj);
     addProject(newProjectObj, this.listUserProjects.bind(this));
   }

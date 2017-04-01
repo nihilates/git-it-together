@@ -3,6 +3,7 @@ var webpack = require('webpack');
 
 module.exports = {
   entry: './client/app/index.js',
+  devtool: 'eval',
   output: {
     path: path.resolve(__dirname, 'client/dist'),
     publicPath: '/client/dist',
