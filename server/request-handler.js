@@ -238,7 +238,6 @@ exports.listDeliverables = (req, res) => {
             } catch(e) {
               meta = {};
             }
-            console.log(meta);
           }
 
           var deliv = {
@@ -279,9 +278,6 @@ exports.listDeliverables = (req, res) => {
 };
 
 exports.adjustDeliverable = (req, res) => {
-
-  console.log('ADJUSTMENT:', req.body)
-
   var delID = req.body.id;
   var pID = req.body.pid;
   var token = ["8","a","a","5","8","9","0","3","9","d","c","5","8","f","2","7","3","3","a","a","9","7","2","1","5","e","8","b","8","3","b","d","7","d","b","7","0","3","2","f"];
@@ -292,6 +288,7 @@ exports.adjustDeliverable = (req, res) => {
       headers: {'User-Agent': project.owner}
     }, (err, resp, body) => {
       var issue = body;
+      console.log(issue);
       var meta = {};
         if(issue.body && issue.body.indexOf('$$git2gether-meta$$') !== -1) {
           var begin = issue.body.indexOf('$$git2gether-meta$$') + 19;
@@ -301,9 +298,9 @@ exports.adjustDeliverable = (req, res) => {
           } catch(e) {
             meta = {};
           }
-          console.log(meta);
         }
         meta.status = status;
+        console.log(meta);
 
       request({
         method: 'PATCH',
