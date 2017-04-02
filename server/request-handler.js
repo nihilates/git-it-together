@@ -286,18 +286,36 @@ exports.adjustDeliverable = (req, res) => {
 
   db.Project.findOne({where: {id: pID}}).then((project) => {
     request({
-      method: 'PATCH',
       url: project.get_repo + '/issues/' + delID,
-      headers: {
-        'User-Agent': 'git2gether-bot',
-        'Authorization': 'token ' + token.join(''),
-        'Content-Type': 'json'
-      },
-      json: {
-        state: 'closed'
-      }
-    }, (err, resp) => {
-      res.end();
+      headers: {'User-Agent': project.owner}
+    }, (err, resp, body) => {
+      var meta = {};
+        if(issue.body && issue.body.indexOf('$$git2gether-meta$$') !== -1) {
+          var begin = issue.body.indexOf('$$git2gether-meta$$') + 19;
+          var end = issue.body.indexOf('$$/git2gether-meta$$');
+          try {
+            meta = JSON.parse(issue.body.substring(begin, end));
+          } catch(e) {
+            meta = {};
+          }
+          console.log(meta);
+        }
+        meta.status = status;
+
+      request({
+        method: 'PATCH',
+        url: project.get_repo + '/issues/' + delID,
+        headers: {
+          'User-Agent': 'git2gether-bot',
+          'Authorization': 'token ' + token.join(''),
+          'Content-Type': 'json'
+        },
+        json: {
+          body: '$$git2gether-meta$$' + JSON.stringify(meta) + '$$git2gether-meta$$'
+        }
+      }, (err, resp) => {
+        res.end();
+      });
     });
   });
 }
