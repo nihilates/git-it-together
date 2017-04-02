@@ -243,7 +243,7 @@ exports.listDeliverables = (req, res) => {
           var deliv = {
             projectID: req.query.id,
             id: issue.number,
-            owner: meta.owner || 'git2gether-bot',
+            owner: meta.owner || issue.user.login,
             task: issue.title,
             progress: issue.state,
             status: meta.status || 'backlog',
