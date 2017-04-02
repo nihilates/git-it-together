@@ -139,7 +139,7 @@ class List extends React.Component {
       }
     }
 
-    if (obj.hasOwnProperty(status)) {
+    if (obj.status) {
       axios.post('/api/adjust/deliverables', obj)
       .then(function(response) {
         socket.emit('change', 'post');
