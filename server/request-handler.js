@@ -311,7 +311,7 @@ exports.adjustDeliverable = (req, res) => {
           'Content-Type': 'json'
         },
         json: {
-          body: '$$git2gether-meta$$' + JSON.stringify(meta) + '$$git2gether-meta$$'
+          body: '$$git2gether-meta$$' + JSON.stringify(meta) + '$$/git2gether-meta$$'
         }
       }, (err, resp) => {
         res.end();
