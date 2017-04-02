@@ -301,6 +301,7 @@ exports.adjustDeliverable = (req, res) => {
           }
         }
         meta.status = status;
+        console.log('******************** METADATA AS IN ADJUST *****', meta);
 
       request({
         method: 'PATCH',
