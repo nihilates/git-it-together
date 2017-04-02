@@ -298,10 +298,11 @@ exports.adjustDeliverable = (req, res) => {
             meta = JSON.parse(issue.body.substring(begin, end));
           } catch(e) {
             meta = {};
+            console.log('ERROR PARSING IN ADJUST');
           }
+          console.log('******************** METADATA AS IN ADJUST *****', meta);
         }
         meta.status = status;
-        console.log('******************** METADATA AS IN ADJUST *****', meta);
 
       request({
         method: 'PATCH',
