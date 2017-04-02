@@ -112,13 +112,13 @@ var Exporter = React.createClass({
       }
       return data;
     };
-    dwnLoad(scrubber(this.props.chatLog), 'GOLDENFILE.csv');
+    dwnLoad(scrubber(this.props.chatLog), this.props.room+'_chats.csv');
   },
 
   render() {
     return (
       <form id="searchChat" onSubmit={this.handleSubmit}>
-        <button type="submit" className="btn btn-sm btn-default">Export</button>
+        <button type="submit" data-toggle='tooltip' title='Export Chats' className="btn btn-sm btn-default"><i className="fa fa-archive"></i></button>
       </form>
     );
   }
@@ -179,25 +179,33 @@ var ChatApp = React.createClass({
     return (
       <div>
         <h2>Chat about {this.props.room}</h2>
-          <form id="searchChat">
-              <input type="search" id="chatTerms" placeholder="Search chats"
-                onChange={this.changeHandler}
-                value={this.state.searchTerms}
-                className="form-control mb-2 mr-sm-2 mb-sm-0"
+        <div id="searchChat">
+          <span id="chatTerms">
+            <form>
+              <input type="search" placeholder="Search chats"
+                  onChange={this.changeHandler}
+                  value={this.state.searchTerms}
+                  className="form-control mb-2 mr-sm-2 mb-sm-0"
               />
-          <Exporter
-            chatLog={(this.state.searchTerms.length) ? this.state.parsedChats : this.state.messages}
-            />
-          </form>
-        <hr />
-        <MessageList
-          messages={(this.state.searchTerms.length) ? this.state.parsedChats : this.state.messages}
-        />
-        <MessageForm
-          onMessageSubmit={this.handleMessageSubmit}
-          user={this.props.user}
-          room={this.props.room}
-        />
+            </form>
+          </span>
+          <span id="exportBtn">
+            <Exporter
+              room={this.props.room}
+              chatLog={(this.state.searchTerms.length) ? this.state.parsedChats : this.state.messages}
+              />
+          </span>
+        </div>
+        <div id="chatCard" className="card">
+          <MessageList
+            messages={(this.state.searchTerms.length) ? this.state.parsedChats : this.state.messages}
+          />
+          <MessageForm
+            onMessageSubmit={this.handleMessageSubmit}
+            user={this.props.user}
+            room={this.props.room}
+          />
+        </div>
       </div>
     );
   }
