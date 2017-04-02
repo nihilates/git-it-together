@@ -289,6 +289,7 @@ exports.adjustDeliverable = (req, res) => {
       url: project.get_repo + '/issues/' + delID,
       headers: {'User-Agent': project.owner}
     }, (err, resp, body) => {
+      var issue = body;
       var meta = {};
         if(issue.body && issue.body.indexOf('$$git2gether-meta$$') !== -1) {
           var begin = issue.body.indexOf('$$git2gether-meta$$') + 19;
