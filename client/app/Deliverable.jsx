@@ -139,10 +139,12 @@ class List extends React.Component {
       }
     }
 
-    axios.post('/api/adjust/deliverables', obj)
-    .then(function(response) {
-      socket.emit('change', 'post');
-    })
+    if (obj.status) {
+      axios.post('/api/adjust/deliverables', obj)
+      .then(function(response) {
+        socket.emit('change', 'post');
+      });
+    }
   }
 
   render() {
@@ -243,8 +245,7 @@ class List extends React.Component {
   }
 }
 
-      // <img src="/client/assets/upArrow.png" className="category-change-button" onClick={() => {adjustDeliverable(deliverable, 'up')}}/>
-      // <img src="/client/assets/downArrow.png" className="category-change-button" onClick={() => {adjustDeliverable(deliverable, 'down')}}/>
+
 
 var Deliverable = ({deliverable, deleteDeliverable, adjustDeliverable}) => (
   <tr>
@@ -254,6 +255,8 @@ var Deliverable = ({deliverable, deleteDeliverable, adjustDeliverable}) => (
     <td>{deliverable.points}</td>
     <td>
       <i className="fa fa-times right" aria-hidden="true" onClick={() => deleteDeliverable(deliverable.id)}></i>
+      <img src="/client/assets/upArrow.png" className="category-change-button" onClick={() => {adjustDeliverable(deliverable, 'up')}}/>
+      <img src="/client/assets/downArrow.png" className="category-change-button" onClick={() => {adjustDeliverable(deliverable, 'down')}}/>
     </td>
   </tr>
 );

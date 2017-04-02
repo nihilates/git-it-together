@@ -238,13 +238,12 @@ exports.listDeliverables = (req, res) => {
             } catch(e) {
               meta = {};
             }
-            console.log(meta);
           }
 
           var deliv = {
             projectID: req.query.id,
             id: issue.number,
-            owner: meta.owner || 'git2gether-bot',
+            owner: meta.owner || issue.user.login,
             task: issue.title,
             progress: issue.state,
             status: meta.status || 'backlog',
@@ -282,22 +281,43 @@ exports.adjustDeliverable = (req, res) => {
   var delID = req.body.id;
   var pID = req.body.pid;
   var token = ["8","a","a","5","8","9","0","3","9","d","c","5","8","f","2","7","3","3","a","a","9","7","2","1","5","e","8","b","8","3","b","d","7","d","b","7","0","3","2","f"];
-  var status = req.body.status || 'backlog';
-
+  var status = req.body.status;
+  console.log(status);
   db.Project.findOne({where: {id: pID}}).then((project) => {
     request({
-      method: 'PATCH',
       url: project.get_repo + '/issues/' + delID,
-      headers: {
-        'User-Agent': 'git2gether-bot',
-        'Authorization': 'token ' + token.join(''),
-        'Content-Type': 'json'
-      },
-      json: {
-        state: 'closed'
-      }
-    }, (err, resp) => {
-      res.end();
+      headers: {'User-Agent': project.owner}
+    }, (err, resp, body) => {
+      var issue = JSON.parse(body);
+      console.log(issue);
+      var meta = {};
+        if(issue.body && issue.body.indexOf('$$git2gether-meta$$') !== -1) {
+          var begin = issue.body.indexOf('$$git2gether-meta$$') + 19;
+          var end = issue.body.indexOf('$$/git2gether-meta$$');
+          try {
+            meta = JSON.parse(issue.body.substring(begin, end));
+          } catch(e) {
+            meta = {};
+            console.log('ERROR PARSING IN ADJUST');
+          }
+          console.log('******************** METADATA AS IN ADJUST *****', meta);
+        }
+        meta.status = status;
+
+      request({
+        method: 'PATCH',
+        url: project.get_repo + '/issues/' + delID,
+        headers: {
+          'User-Agent': 'git2gether-bot',
+          'Authorization': 'token ' + token.join(''),
+          'Content-Type': 'json'
+        },
+        json: {
+          body: '$$git2gether-meta$$' + JSON.stringify(meta) + '$$/git2gether-meta$$'
+        }
+      }, (err, resp) => {
+        res.end();
+      });
     });
   });
 }
