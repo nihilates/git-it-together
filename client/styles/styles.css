@@ -271,11 +271,28 @@ benefit: their scalability and you don't have to adjust the px value of everythi
 /*Chat Room Styles ------------------------------------------------------------------*/
 /*this seemed to be the perfect balance so that the messages don't spill over and the input field remains near the bottom*/
 .messages {
-  min-height: 460px;
+  min-height: 440px;
   overflow-y: scroll;
   word-wrap: break-word;
   padding: 0 1em;
-  max-height: 460px;
+  max-height: 440px;
+}
+
+#searchChat {
+ display: inline-block;
+ width: 100%;
+}
+
+#chatTerms {
+  float: left;
+  min-width: 80%;
+  max-width: 90%;
+}
+
+#exportBtn {
+  float: left;
+  margin-top: 5px;
+  margin-left: 5px;
 }
 
 .message {
@@ -300,8 +317,9 @@ benefit: their scalability and you don't have to adjust the px value of everythi
   margin-top: 1.5em;
 }
 
-.message_form {
-  position: relative;
+.chatCard {
+  min-height: 400px;
+  max-height: 400px;
 }
 
 /*Add Repo Styles ------------------------------------------------------------------*/
