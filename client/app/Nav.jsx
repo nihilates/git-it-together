@@ -1,10 +1,13 @@
 import React from 'react';
+import { Link } from 'react-router'
 
 var Nav = ({profile, logout, handleProjectListEntryClick, current}) => (
   <nav className='navbar navbar-light bg-faded'>
     <div className='navbar-header'>
       <div className="dropdown">
+        <Link  to='/' style={{ textDecoration: 'none', color: 'black' }}>
         <img src="/client/assets/unicorn-head-silhouette.png" className="navbar-brand dropdown" alt="unicorn head" onClick={() => handleProjectListEntryClick(null)}/>
+        </Link>
         <div className="card dropdown-content">
           {/* <img className="card-img-top" src={profile.picture} alt="profile picture" /> */}
           <div className="card-block">
