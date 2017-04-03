@@ -12,12 +12,9 @@ export class Login extends React.Component {
       <div className="container login">
         <div className="jumbotron">
           <div className="row align-items-center justify-contents-center">
-            <div className="col">
-              <h1>Git It Together</h1>
-            </div>
             <div className="w-100"></div>
             <div className="col">
-              <img src="client/assets/unicorn-head-silhouette.png" alt="Git It Together logo" />
+              <img src="client/assets/git2gether.png" alt="Git It Together logo" />
             </div>
             <div className="w-100"></div>
             <div className="col">

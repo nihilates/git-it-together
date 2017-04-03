@@ -92,7 +92,7 @@ export default class App extends React.Component {
                     <div>
                         <Match exactly pattern='/' component={(props)=> {
                             return (<div><Nav profile={profile} logout={this.logout.bind(this)} handleProjectListEntryClick={this.handleProjectListEntryClick.bind(this)} current="" />
-                                <About /><Search projects={this.state.projects} handleProjectListEntryClick={this.handleProjectListEntryClick.bind(this)} handleRepoClick={this.addNewProject.bind(this)} /></div>)
+                                <Search projects={this.state.projects} handleProjectListEntryClick={this.handleProjectListEntryClick.bind(this)} handleRepoClick={this.addNewProject.bind(this)} /></div>)
                         }} />
                         <Match pattern='/details/:owner/:repo' component={(props) => {
                             return (<div><Nav profile={profile} logout={this.logout.bind(this)} handleProjectListEntryClick={this.handleProjectListEntryClick.bind(this)} />
