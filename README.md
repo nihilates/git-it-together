@@ -23,10 +23,12 @@ Login through Auth O using your GitHub account. If you create an account instead
 Search your GitHub repos and add them using the drop-down list. Once added, your repos will be accessible from your profile. Note that if your repo is forked from a parent, the parent repo will be used as the source for the project. This allows you to collaborate with other users who forked the same repo.
 ### Adding and Removing Deliverables or Resources
 Fill out the form entirely and then submit, the lists will automatically update when you or anyone else adds/deletes deliverables/resources. To delete an item press the X that is located next to it.
+Deliverables will show up on Github as they are added or closed in the app.
 ### Deleting User Projects
 Click the trash icon to the right of the project name in the project view. This removes it from your list, but does not delete the project itself. If you delete a project by mistake, you can always re-add it in the project list view.
 ### Utilizing Live Chat
 Simply enter a message into the chat input bar and hit enter. Your message will be emitted to all other users in the same project and saved to the database. Your messages will persist even after you leave the project.
+Chat searching uses the existing chat data, and simply returns a parsed array of only chats that meet the chat term entries.
 ### Using Video Chat
 Each project comes equipped with a dynamically created Appear.in room. Simply click "enter room" to join your teammates in a live chat.
 
@@ -70,3 +72,7 @@ Git It Together uses the GitHub API to obtain information about repositories. Fo
 - __Product Owner__: [James Mitchell](https://github.com/Jimmy6strings)
 - __Scrum Master__: [Meg Viar](https://github.com/lmegviar)
 - __Development Team Members__: [Kyle Anson](https://github.com/Riski24), [Simon de Moor](https://github.com/sdemoor), [Jordan Stubblefield](https://github.com/JStubb7939)
+## Legacy Team
+- __Product Owner__: [Faiz Mohammed](https://github.com/faiz121)
+- __Scrum Master__: [Mohammad Farooqi](https://github.com/mohammadfarooqi)
+- __Development Team Members__: [Alex Moores](https://github.com/admoores), [Seán Ellison-Chen](https://github.com/nihilates)
