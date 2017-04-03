@@ -4,7 +4,7 @@ var Nav = ({profile, logout, handleProjectListEntryClick, current}) => (
   <nav className='navbar navbar-light bg-faded'>
     <div className='navbar-header'>
       <div className="dropdown">
-        <img src="/client/assets/unicorn-head-silhouette.png" className="navbar-brand dropdown" alt="unicorn head" onClick={() => handleProjectListEntryClick(null)}/>
+        <img src="/client/assets/git2gether.png" className="navbar-brand dropdown" alt="unicorn head" onClick={() => handleProjectListEntryClick(null)}/>
         <div className="card dropdown-content">
           {/* <img className="card-img-top" src={profile.picture} alt="profile picture" /> */}
           <div className="card-block">
